@@ -1,3 +1,14 @@
+.background {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: url("../images/background.png") no-repeat center center fixed;
+	background-size: cover;
+	filter: blur(10px);
+	-webkit-filter: blur(10px);
+	-ms-filter: blur(10px);
+}
+
 .login-form {
 	position: absolute;
 	height: 100%;
@@ -11,17 +22,15 @@
 }
 
 .login-form > div {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
 	margin: 1em 0;
 }
 
-.login-form .text-field {
-	float: right;
-	margin-left: 10px;
-	border-style: groove;
-}
-
 .title {
-	font-size: 3em;
+	color: #337ab7;
+	font-size: 4em;
 	font-style: italic;
 	font-weight: bold;
 	text-align: center;

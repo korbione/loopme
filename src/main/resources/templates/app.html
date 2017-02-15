@@ -10,10 +10,8 @@
 </head>
 
 <body>
-<div class="background"></div>
-<form class="login-form" th:action="@{/login}" method="POST">
-	<p th:if="${loginError}">Wrong username or password</p>
-	<p th:if="${logout}">User was logged out</p>
+
+<form class="login-form form-group" th:action="@{/login}" method="post">
 	<label class="title" th:text="#{login.title}"></label>
 	<div>
 		<label class="label" for="user_name" th:text="#{login.username}"></label>
@@ -25,7 +23,10 @@
 		<input id="user_password" type="password" name="password" class="input-lg"
 			   th:placeholder="#{login.input.password.placeholder}"/>
 	</div>
-	<input class="btn btn-lg btn-primary btn-block" type="submit" th:value="#{login.submit}"/>
+	<input class="btn btn-primary" type="submit" th:value="#{login.submit}"/>
+</form>
+<form th:action="@{/logout}" action="/logout" method="post">
+	<input class="btn btn-primary" type="submit" th:value="Logout"/>
 </form>
 </body>
 </html>

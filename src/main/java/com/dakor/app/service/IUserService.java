@@ -1,6 +1,6 @@
 package com.dakor.app.service;
 
-import com.dakor.app.model.UserDto;
+import com.dakor.app.service.dto.UserDto;
 
 /**
  * .

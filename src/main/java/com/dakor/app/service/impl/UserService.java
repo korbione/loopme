@@ -2,7 +2,7 @@ package com.dakor.app.service.impl;
 
 import com.dakor.app.data.dao.IUserDao;
 import com.dakor.app.data.entity.UserEntity;
-import com.dakor.app.model.UserDto;
+import com.dakor.app.service.dto.UserDto;
 import com.dakor.app.service.IUserService;
 import com.dakor.app.service.impl.assembler.IUserAssembler;
 import org.apache.commons.lang3.StringUtils;

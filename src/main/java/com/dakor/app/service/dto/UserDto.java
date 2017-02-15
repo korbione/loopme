@@ -1,4 +1,4 @@
-package com.dakor.app.model;
+package com.dakor.app.service.dto;
 
 import com.dakor.app.data.entity.UserRole;
 

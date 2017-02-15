@@ -1,7 +1,7 @@
 package com.dakor.app;
 
 import com.dakor.app.data.entity.UserRole;
-import com.dakor.app.model.UserDto;
+import com.dakor.app.service.dto.UserDto;
 import com.dakor.app.service.IUserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

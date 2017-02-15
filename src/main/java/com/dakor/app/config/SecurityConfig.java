@@ -1,6 +1,5 @@
 package com.dakor.app.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		super.configure(auth);
 
-		auth.userDetailsService(userDetailsServiceBean()).and().inMemoryAuthentication().withUser("sa").password("sa");
+		auth.userDetailsService(userDetailsServiceBean());
 	}
 
 	@Override
@@ -32,8 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// @formatter:off
 		http.authorizeRequests().anyRequest().authenticated()
-				.and().formLogin().loginPage("/login").successForwardUrl("/app").permitAll()
-				.and().logout().logoutUrl("/login?logout").permitAll();
+				.and().formLogin().loginPage("/login").defaultSuccessUrl("/app", true).permitAll()
+				.and().logout().logoutSuccessUrl("/login?logout").permitAll();
 		// @formatter:on
 	}
 }
