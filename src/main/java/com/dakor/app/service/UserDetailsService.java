@@ -2,6 +2,7 @@ package com.dakor.app.service;
 
 import com.dakor.app.data.dao.IUserDao;
 import com.dakor.app.data.entity.UserEntity;
+import com.dakor.app.data.entity.UserRole;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 		if (StringUtils.isNotBlank(name)) {
 			UserEntity user = userDao.findByName(name);
 			if (user != null) {
-				details = new User(user.getName(), user.getPassword(), user.getRole().name());
+				details = new User(user.getName(), user.getPassword(), user.getRole());
 			}
 		}
 
@@ -53,9 +54,11 @@ public class UserDetailsService implements org.springframework.security.core.use
 	 * @author dkor
 	 */
 	public static class User extends org.springframework.security.core.userdetails.User {
+		public UserRole role;
 
-		public User(String username, String password, String role) {
-			super(username, password, Collections.singleton(new SimpleGrantedAuthority(Validate.notNull(role))));
+		public User(String username, String password, UserRole role) {
+			super(username, password, Collections.singleton(new SimpleGrantedAuthority(Validate.notNull(role).name())));
+			this.role = role;
 		}
 
 		@Override

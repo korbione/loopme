@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
+<body>
+<div th:fragment="usersList" th:unless="${#lists.isEmpty(users)}">
+	<table>
+		<tr>
+			<th>NAME</th>
+			<th>PRICE</th>
+			<th>IN STOCK</th>
+		</tr>
+		<!--/*@thymesVar id="users" type="java.util.List<com.dakor.app.mvc.model.UserModel>"*/-->
+		<tr th:each="user : ${users}">
+			<td th:text="${user.name}">unknown name</td>
+			<td th:text="${user.email}"></td>
+			<td th:text="#{app.tab.users.update}">Update</td>
+		</tr>
+	</table>
+</div>
+</body>
+</html>

@@ -21,11 +21,12 @@
 	justify-content: center;
 }
 
-.login-form > div {
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	margin: 1em 0;
+.login-form .input-lg {
+	margin: 0.5em 0;
+}
+
+.login-form input[type=submit] {
+	margin-top: 1em;
 }
 
 .title {

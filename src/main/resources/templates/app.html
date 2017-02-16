@@ -3,30 +3,47 @@
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title th:text="#{login.page.title}"></title>
+	<title th:text="#{app.page.title}"></title>
 
-	<link type="text/css" rel="stylesheet" th:href="@{/css/login.css}" href="../static/css/login.css"/>
+	<link type="text/css" rel="stylesheet" th:href="@{/css/app.css}" href="../static/css/app.css"/>
 	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
 
 <body>
+<div class="panel-body">
+	<ul id="actionTabs" class="nav nav-tabs">
+		<li>
+			<a href="#users" data-toggle="tab" th:text="#{app.tab.users.title}">Users</a>
+		</li>
+		<li>
+			<a href="#products" data-toggle="tab" th:text="#{app.tab.products.title}">Products</a>
+		</li>
+		<li class="pull-right">
+			<form id="logoutForm" th:action="@{/logout}" action="/logout" method="post">
+				<input class="btn btn-primary" type="submit" th:value="#{app.logout}" value="Logout"/>
+			</form>
+		</li>
+	</ul>
+	<div id="actionTabsContent" class="tab-content">
+		<div id="users" class="tab-pane fade form-group">
+			<!--<input value="fetch" onclick="$('#resultUsers').load('/app/users')" type="button"/>-->
+			<div id="resultUsers">
 
-<form class="login-form form-group" th:action="@{/login}" method="post">
-	<label class="title" th:text="#{login.title}"></label>
-	<div>
-		<label class="label" for="user_name" th:text="#{login.username}"></label>
-		<input id="user_name" type="text" name="username" class="input-lg"
-			   th:placeholder="#{login.input.username.placeholder}"/>
+			</div>
+		</div>
+		<div id="products" class="tab-pane fade form-group">
+			<label>hello, product</label>
+		</div>
 	</div>
-	<div>
-		<label class="label" for="user_password" th:text="#{login.password}"></label>
-		<input id="user_password" type="password" name="password" class="input-lg"
-			   th:placeholder="#{login.input.password.placeholder}"/>
-	</div>
-	<input class="btn btn-primary" type="submit" th:value="#{login.submit}"/>
-</form>
-<form th:action="@{/logout}" action="/logout" method="post">
-	<input class="btn btn-primary" type="submit" th:value="Logout"/>
-</form>
+</div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+	$(function () {
+		$('#actionTabs').find('a:first').tab('show');
+		$('#resultUsers').load('/app/users');
+	});
+</script>
 </body>
 </html>

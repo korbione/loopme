@@ -32,7 +32,7 @@ public class UserEntity {
 	private String email;
 
 	@Column(name = "ROLE", nullable = false, length = 30)
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.ORDINAL)
 	private UserRole role;
 
 	@PrePersist

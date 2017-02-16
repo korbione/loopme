@@ -1,12 +1,22 @@
 package com.dakor.app.config;
 
+import com.dakor.app.data.entity.UserRole;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.repository.query.spi.EvaluationContextExtension;
+import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
+import org.springframework.data.repository.query.spi.Function;
+import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Map;
 
 /**
  * .
@@ -30,9 +40,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		super.configure(http);
 
 		// @formatter:off
-		http.authorizeRequests().anyRequest().authenticated()
+		http.authorizeRequests()
+				.mvcMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
+				.mvcMatchers("/adops/**").hasAnyRole(UserRole.ADOPS.name(), UserRole.ADMIN.name())
+				.anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").defaultSuccessUrl("/app", true).permitAll()
 				.and().logout().logoutSuccessUrl("/login?logout").permitAll();
 		// @formatter:on
+	}
+
+	@Bean
+	EvaluationContextExtension securityExtension() {
+		return new SecurityEvaluationContextExtension();
+	}
+
+	public static class SecurityEvaluationContextExtension extends EvaluationContextExtensionSupport {
+		@Override
+		public String getExtensionId() {
+			return "security";
+		}
+
+		@Override
+		public SecurityExpressionRoot getRootObject() {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			return new SecurityExpressionRoot(authentication) {};
+		}
 	}
 }
