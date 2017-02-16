@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang='en'">
+<head>
+    <link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+
+<body>
+<div th:fragment="locale" class="dropdown" style="margin: 0 10px;">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+        <span th:text="${lang}">Locale</span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" style="min-width: 50px;" aria-labelledby="dropdownMenu">
+        <li><a href="" onclick="changeLocale('en_US')">en</a></li>
+        <li><a href="" onclick="changeLocale('ru_RU')">ru</a></li>
+    </ul>
+</div>
+<script th:src="@{/js/common.js}" src="../static/js/common.js"></script>
+</body>
+</html>

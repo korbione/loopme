@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="lang">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  th:with="lang=${#locale.language}" th:lang="${lang}">
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -12,8 +13,8 @@
 <body>
 <div class="panel-body">
 	<ul id="actionTabs" class="nav nav-tabs">
-		<li>
-			<a href="#users" data-toggle="tab" th:text="#{app.tab.users.title}">Users</a>
+		<li sec:authorize="hasAnyAuthority('ADOPS', 'ADMIN')">
+			<a href="#users" data-toggle="tab" onclick="fetchUsers()" th:text="#{app.tab.users.title}">Users</a>
 		</li>
 		<li>
 			<a href="#products" data-toggle="tab" th:text="#{app.tab.products.title}">Products</a>
@@ -23,13 +24,13 @@
 				<input class="btn btn-primary" type="submit" th:value="#{app.logout}" value="Logout"/>
 			</form>
 		</li>
+		<li class="pull-right">
+			<div th:replace="fragments :: locale"></div>
+		</li>
 	</ul>
 	<div id="actionTabsContent" class="tab-content">
 		<div id="users" class="tab-pane fade form-group">
-			<!--<input value="fetch" onclick="$('#resultUsers').load('/app/users')" type="button"/>-->
-			<div id="resultUsers">
-
-			</div>
+			<div id="resultUsers"></div>
 		</div>
 		<div id="products" class="tab-pane fade form-group">
 			<label>hello, product</label>
@@ -39,11 +40,16 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{/js/common.js}" src="../static/js/common.js"></script>
 <script>
 	$(function () {
 		$('#actionTabs').find('a:first').tab('show');
-		$('#resultUsers').load('/app/users');
+        fetchUsers();
 	});
+
+    function fetchUsers() {
+        $('#resultUsers').load('/app/users');
+    }
 </script>
 </body>
 </html>

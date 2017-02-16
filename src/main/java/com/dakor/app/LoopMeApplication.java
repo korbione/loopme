@@ -27,11 +27,15 @@ public class LoopMeApplication {
 				admin.setRole(UserRole.ADMIN);
 				userService.save(admin);
 			}
-/*			admin = new UserDto();
-			admin.setUserName("u");
-			admin.setPassword("u");
-			admin.setRole(UserRole.PUBLISHER);
-			userService.save(admin);*/
+			UserDto user = userService.getUserByName("u");
+			if (user == null) {
+				user = new UserDto();
+				user.setUserName("u");
+				user.setPassword("u");
+				user.setEmail("user email");
+				user.setRole(UserRole.PUBLISHER);
+				userService.save(user);
+			}
 		};
 	}
 }

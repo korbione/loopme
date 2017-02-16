@@ -1,23 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
 
 <body>
-<div th:fragment="usersList" th:unless="${#lists.isEmpty(users)}">
-	<table>
-		<tr>
+<div th:fragment="usersList" th:unless="${#lists.isEmpty(users)}" th:remove="tag">
+	<table class="table" style="width: 50%; min-width: 400px">
+		<tr class="row">
+			<th>#</th>
 			<th>NAME</th>
-			<th>PRICE</th>
+			<th>EMAIL</th>
 			<th>IN STOCK</th>
 		</tr>
-		<!--/*@thymesVar id="users" type="java.util.List<com.dakor.app.mvc.model.UserModel>"*/-->
-		<tr th:each="user : ${users}">
+		<tr class="row" th:with="idx=''" th:each="user : ${users}">
+			<td th:text="${#ids.seq(idx)}"></td>
 			<td th:text="${user.name}">unknown name</td>
 			<td th:text="${user.email}"></td>
-			<td th:text="#{app.tab.users.update}">Update</td>
+			<td>
+				<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal">
+					update
+				</button>
+
+				<!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="form">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+							</div>
+							<div class="modal-body">
+								<input type="text" name="name"/>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary">Save changes</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</td>
 		</tr>
 	</table>
+</div>
+<div th:fragment="hello" th:remove="tag">
+	<label>hello</label>
 </div>
 </body>
 </html>

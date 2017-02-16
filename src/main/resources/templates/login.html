@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="lang">
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,6 +11,9 @@
 
 <body>
 <div class="background"></div>
+<div class="pull-right">
+	<div th:replace="fragments :: locale"></div>
+</div>
 <form class="login-form" th:action="@{/login}" method="POST">
 	<label class="title" th:text="#{login.title}"></label>
 	<p class="label-warning"
@@ -23,5 +26,9 @@
 		   th:placeholder="#{login.input.password.placeholder}"/>
 	<input class="btn btn-lg btn-primary btn-block" type="submit" th:value="#{login.submit}"/>
 </form>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{/js/common.js}" src="../static/js/common.js"></script>
 </body>
 </html>

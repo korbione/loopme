@@ -39,9 +39,8 @@ public class AppController {
 	}
 
 	@RequestMapping(value="/users", method = RequestMethod.GET)
-	public String getUsers(ModelAndView modelAndView) {
-		List<UserModel> users = getUsers();
-		modelAndView.addObject("users", users);
+	public String getUsers(Model model) {
+		model.addAttribute("users", getUsers());
 
 		return "users :: usersList";
 	}
