@@ -39,7 +39,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 		}
 
 		if (details == null) {
-			throw new UsernameNotFoundException("An user with the name '" + name + "' is not found in the system."
+			throw new UsernameNotFoundException("A user with the name '" + name + "' is not found in the system."
 					+ " Please, check your credentials");
 		}
 

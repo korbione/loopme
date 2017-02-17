@@ -2,15 +2,38 @@ package com.dakor.app.mvc.model;
 
 import com.dakor.app.data.entity.UserRole;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  * .
  *
  * @author dkor
  */
 public class UserModel {
+	private Integer id;
+
+	@NotNull
+	@Size(min = 1, max = 255)
 	private String name;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	private String password;
+
+	@Size(max = 255)
 	private String email;
+
+	@NotNull
 	private UserRole role;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -18,6 +41,14 @@ public class UserModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {

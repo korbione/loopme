@@ -1,51 +1,115 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
 
 <body>
-<div th:fragment="usersList" th:unless="${#lists.isEmpty(users)}" th:remove="tag">
+
+<!-- fragment of the users table -->
+<div id="usersBlock" th:fragment="usersList" th:unless="${#lists.isEmpty(users)}" th:remove="tag">
+	<button id="addUser" type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#userDialog">
+		<span class="glyphicon glyphicon-plus"></span>
+	</button>
+
 	<table class="table" style="width: 50%; min-width: 400px">
 		<tr class="row">
 			<th>#</th>
 			<th>NAME</th>
 			<th>EMAIL</th>
-			<th>IN STOCK</th>
+			<th></th>
 		</tr>
 		<tr class="row" th:with="idx=''" th:each="user : ${users}">
 			<td th:text="${#ids.seq(idx)}"></td>
 			<td th:text="${user.name}">unknown name</td>
 			<td th:text="${user.email}"></td>
 			<td>
-				<button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#myModal">
-					update
+				<button id="editUser" type="button" class="btn btn-xs btn-success" data-toggle="modal"
+						data-target="#userDialog">
+					<span class="glyphicon glyphicon-pencil"></span>
 				</button>
 
-				<!-- Modal -->
-				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-					<div class="modal-dialog" role="form">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h4 class="modal-title" id="myModalLabel">Modal title</h4>
-							</div>
-							<div class="modal-body">
-								<input type="text" name="name"/>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary">Save changes</button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<button type="button" class="btn btn-xs btn-danger">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+
+				<!-- user dialog -->
+				<div th:replace="users :: userDialog"></div>
 			</td>
 		</tr>
 	</table>
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		function initButtons() {
+			$('#editUser').click(function () {
+				$('#dialogTitle').html([[#{app.users.dialog.title.edit}]]);
+			});
+
+			$('#addUser').click(function () {
+				$('#dialogTitle').html([[#{app.users.dialog.title.add}]]);
+			});
+		}
+		$(document).ready(function () {
+			initButtons();
+		});
+		/*]]>*/
+	</script>
 </div>
-<div th:fragment="hello" th:remove="tag">
-	<label>hello</label>
+
+<!-- fragment of the user dialog -->
+<div th:fragment="userDialog" id="userDialog" class="modal fade" tabindex="-1" role="dialog"
+	 aria-labelledby="dialogTitle">
+	<div class="modal-dialog" role="form" style="width: 400px">
+		<div class="modal-content">
+			<form th:action="@{/app/users/save}" method="post">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="dialogTitle">Modal title</h4>
+				</div>
+				<div class="modal-body panel-body">
+					<input type="hidden" name="id"/>
+					<div class="row" style="margin: 0">
+						<label for="dialogUserName" th:text="#{app.users.dialog.username}"></label>
+						<input id="dialogUserName" class="pull-right" type="text" name="name"/>
+					</div>
+					<div class="row" style="margin: 0">
+						<label for="dialogUserPassword" th:text="#{app.users.dialog.password}"></label>
+						<input id="dialogUserPassword" class="pull-right" type="text" name="password"/>
+					</div>
+					<div class="row" style="margin: 0">
+						<label for="dialogUserEmail" th:text="#{app.users.dialog.email}"></label>
+						<input id="dialogUserEmail" class="pull-right" type="text" name="email"/>
+					</div>
+					<div class="row" style="margin: 0">
+						<label for="userRole" th:text="#{app.users.dialog.role}"></label>
+						<!-- dropdown menu: visible in case there are more than 1 role -->
+						<div class="pull-right" style="margin: 0; display: inline-flex">
+							<div th:if="${#lists.size(roles) > 1}" id="userRoleDropdown" class="dropdown">
+								<a id="dropdownMenu" class="btn dropdown-toggle"
+								   data-toggle="dropdown"><span class="caret"></span></a>
+								<ul class="dropdown-menu">
+									<li th:each="role : ${roles}">
+										<a onclick="$('#userRole').val($(this).text())" th:text="${role}">Role</a>
+									</li>
+								</ul>
+							</div>
+							<input id="userRole" type="text" name="role" class="form-control" readonly="readonly"/>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal"
+						   th:value="#{app.users.dialog.close}"/>
+					<input type="submit" class="btn btn-primary" th:value="#{app.users.dialog.save}"/>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>
