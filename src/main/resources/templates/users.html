@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:data="">
 <head>
 	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
@@ -12,15 +12,15 @@
 		<span class="glyphicon glyphicon-plus"></span>
 	</button>
 
-	<table class="table" style="width: 50%; min-width: 400px">
+	<table class="table">
 		<tr class="row">
 			<th>#</th>
 			<th>NAME</th>
 			<th>EMAIL</th>
 			<th></th>
 		</tr>
-		<tr class="row" th:with="idx=''" th:each="user : ${users}">
-			<td th:text="${#ids.seq(idx)}"></td>
+		<tr class="row" data:user="${user.toJson()}" th:each="user, iterStat : ${users}">
+			<td th:text="${iterStat.count}">0</td>
 			<td th:text="${user.name}">unknown name</td>
 			<td th:text="${user.email}"></td>
 			<td>
@@ -29,15 +29,15 @@
 					<span class="glyphicon glyphicon-pencil"></span>
 				</button>
 
-				<button type="button" class="btn btn-xs btn-danger">
+				<button id="removeUser" type="button" class="btn btn-xs btn-danger" onclick="removeUser($(this))">
 					<span class="glyphicon glyphicon-remove"></span>
 				</button>
-
-				<!-- user dialog -->
-				<div th:replace="users :: userDialog"></div>
 			</td>
 		</tr>
 	</table>
+
+	<!-- user dialog -->
+	<div th:replace="users :: userDialog"></div>
 
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -50,8 +50,24 @@
 				$('#dialogTitle').html([[#{app.users.dialog.title.add}]]);
 			});
 		}
+        function removeUser(source) {
+		    var id = source.parents('tr').data('user').id;
+            $.ajax({
+                url: "app/users/" + id,
+                type: "delete"
+			}).done(function() {
+                source.parents('tr').remove();
+			});
+        }
 		$(document).ready(function () {
 			initButtons();
+
+            var token = $("input[name='_csrf']").val();
+            $.ajaxSetup({
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('X-CSRF-TOKEN', token);
+                }
+            });
 		});
 		/*]]>*/
 	</script>

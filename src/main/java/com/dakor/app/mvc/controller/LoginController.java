@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @RequestMapping("/login")
+@SuppressWarnings("unused")
 public class LoginController {
 
 	@RequestMapping(method = RequestMethod.GET)

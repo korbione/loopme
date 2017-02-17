@@ -1,6 +1,8 @@
 package com.dakor.app.config;
 
+import com.github.mxab.thymeleaf.extras.dataattribute.dialect.DataAttributeDialect;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,12 @@ import java.util.Locale;
 @EnableAutoConfiguration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class MvcConfig extends WebMvcConfigurerAdapter {
+
+	@Bean
+	@ConditionalOnMissingBean
+	public DataAttributeDialect dataAttributeDialect() {
+		return new DataAttributeDialect();
+	}
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {

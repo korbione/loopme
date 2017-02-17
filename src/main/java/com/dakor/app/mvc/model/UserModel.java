@@ -1,6 +1,8 @@
 package com.dakor.app.mvc.model;
 
 import com.dakor.app.data.entity.UserRole;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -65,5 +67,14 @@ public class UserModel {
 
 	public void setRole(UserRole role) {
 		this.role = role;
+	}
+
+	@SuppressWarnings("unused")
+	public String toJson() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return "{}";
+		}
 	}
 }
