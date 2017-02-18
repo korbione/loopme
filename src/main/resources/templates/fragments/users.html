@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:data="...">
+<head>
+	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+
+<body>
+
+<!-- fragment of the users table -->
+<div id="usersBlock" th:fragment="users" th:unless="${#lists.isEmpty(users)}" th:remove="tag">
+	<a class="btn btn-lg btn-success btn-space" data-toggle="modal" data-target="#userDialog"
+	   th:text="#{app.tab.users.add}">Add new user</a>
+
+	<table class="table">
+		<tr class="row">
+			<th>#</th>
+			<th th:text="#{app.tab.users.column.name}">NAME</th>
+			<th th:text="#{app.tab.users.column.email}">Email</th>
+			<th></th>
+		</tr>
+		<tr class="row" data:user="${user.toJson()}" th:each="user, iterStat : ${users}">
+			<td th:text="${iterStat.count}">0</td>
+			<td id="name" th:text="${user.name}">unknown name</td>
+			<td id="email" th:text="${user.email}"></td>
+			<td>
+				<button id="editUser" type="button" class="btn btn-xs btn-success" data-toggle="modal"
+						data-target="#userDialog">
+					<span class="glyphicon glyphicon-pencil"></span>
+				</button>
+
+				<button id="removeUser" type="button" class="btn btn-xs btn-danger" onclick="removeUser($(this))">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+			</td>
+		</tr>
+	</table>
+
+	<!-- user dialog -->
+	<div th:replace="fragments/user_dialog :: dialog"></div>
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		function initButtons() {
+			$('#editUser').each(function (idx) {
+				$(this).click(function () {
+					var $row = $(this).parents('tr');
+					var user = $row.data('user');
+					var $dialog = $('#userDialog');
+					$dialog.find('#dialogTitle').html([[#{app.users.dialog.title.edit}]]);
+					$dialog.find('id').val(user.id);
+					$dialog.find('name').val(user.name);
+					$dialog.find('password').val(user.password);
+					$dialog.find('email').val(user.email);
+					$dialog.find('role').val(user.role);
+
+					$dialog.find('#dialogSaveButton').on('click', function () {
+						console.log('submit');
+						$dialog.close();
+
+						user.name = $dialog.find('name').val();
+						user.password = $dialog.find('password').val();
+						user.email = $dialog.find('email').val();
+						user.role = $dialog.find('role').val();
+						$row.data('user', user);
+						$row.find('#name').text(user.name);
+						$row.find('#email').text(user.email);
+					});
+				})
+			});
+
+			$('#addUser').click(function () {
+				$('#dialogTitle').html([[#{app.users.dialog.title.add}]]);
+			});
+		}
+		function removeUser(source) {
+			var id = source.parents('tr').data('user').id;
+			$.ajax({
+				url: "app/users/" + id,
+				type: "delete"
+			}).success(function (e) {
+				console.log(e);
+				console.log(JSON.stringify(e));
+				source.parents('tr').remove();
+			});
+		}
+		$(document).ready(function () {
+			initButtons();
+
+			var token = $("input[name='_csrf']").val();
+			$.ajaxSetup({
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('X-CSRF-TOKEN', token);
+				}
+			});
+		});
+		/*]]>*/
+	</script>
+</div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

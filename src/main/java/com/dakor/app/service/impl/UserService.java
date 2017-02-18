@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author dkor
  */
 @Service
-@Transactional
+@SuppressWarnings("unused")
 class UserService implements IUserService {
 	@Autowired
 	private IUserDao userDao;
@@ -30,6 +30,7 @@ class UserService implements IUserService {
 	@Autowired
 	private IUserAssembler userAssembler;
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<UserDto> getUsers() {
 		List<UserDto> users = new ArrayList<>();
@@ -41,6 +42,7 @@ class UserService implements IUserService {
 		return users;
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public UserDto getUserByName(String userName) {
 		UserDto user = null;
@@ -52,6 +54,7 @@ class UserService implements IUserService {
 		return user;
 	}
 
+	@Transactional
 	@Override
 	public UserDto save(UserDto user) {
 		UserEntity userEntity = userAssembler.assembly(user);
@@ -63,11 +66,11 @@ class UserService implements IUserService {
 		return user;
 	}
 
+	@Transactional
 	@Override
 	public void deleteById(Integer userId) {
 		if (userId != null) {
 			userDao.delete(userId);
 		}
 	}
-
 }

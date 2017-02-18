@@ -11,10 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,7 +39,8 @@ public class UsersController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getUsers(Model model) {
-        model.addAttribute("users", getUsers());
+        List<UserModel> users = userService.getUsers().stream().map(this::convert).collect(Collectors.toList());
+        model.addAttribute("users", users);
 
         // define available roles: just with less ordinal ones are available
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,7 +49,7 @@ public class UsersController {
                 .collect(Collectors.toList());
         model.addAttribute("roles", availableRoles);
 
-        return "users :: usersList";
+        return "fragments/users :: users";
     }
 
     @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
@@ -62,28 +65,29 @@ public class UsersController {
         }
 
         UserDto dto = new UserDto();
+        dto.setId(userModel.getId());
         dto.setUserName(userModel.getName());
         dto.setEmail(userModel.getEmail());
+        dto.setPassword(userModel.getPassword());
         dto.setRole(userModel.getRole());
 
-        userService.save(dto);
+        UserDto savedUser = userService.save(dto);
 
-        model.addAttribute("users", getUsers());
+        model.addAttribute("user", convert(savedUser));
 
-        return "users :: usersList";
+        return "fragments/users :: users";
     }
 
-    private List<UserModel> getUsers() {
-        List<UserModel> models = new ArrayList<>();
-        userService.getUsers().forEach(user -> {
-            UserModel model = new UserModel();
-            model.setId(user.getId());
-            model.setName(user.getUserName());
-            model.setEmail(user.getEmail());
-            model.setRole(user.getRole());
-            models.add(model);
-        });
+    private UserModel convert(UserDto dto) {
+        UserModel model = null;
+        if (dto != null) {
+            model = new UserModel();
+            model.setId(dto.getId());
+            model.setName(dto.getUserName());
+            model.setEmail(dto.getEmail());
+            model.setRole(dto.getRole());
+        }
 
-        return models;
+        return model;
     }
 }
