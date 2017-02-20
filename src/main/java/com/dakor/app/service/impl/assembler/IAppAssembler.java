@@ -13,6 +13,4 @@ public interface IAppAssembler {
 	ProductDto assembly(AppEntity entity);
 
 	AppEntity assembly(ProductDto dto);
-
-	AppEntity assembly(AppEntity origAppEntity, ProductDto dto);
 }

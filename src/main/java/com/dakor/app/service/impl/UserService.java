@@ -59,13 +59,7 @@ class UserService implements IUserService {
 	@Override
 	public UserDto save(UserDto user) {
 		if (user != null) {
-			UserEntity origUserEntity = null;
-			if (user.getId() != null) {
-				// for update the entity
-				origUserEntity = userDao.getOne(user.getId());
-			}
-
-			UserEntity userEntity = userAssembler.assembly(origUserEntity, user);
+			UserEntity userEntity = userAssembler.assembly(user);
 			UserEntity savedUserEntity = userDao.saveAndFlush(userEntity);
 			user = userAssembler.assembly(savedUserEntity);
 		}

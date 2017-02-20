@@ -40,16 +40,10 @@ public class AppAssembler implements IAppAssembler {
 
 	@Override
 	public AppEntity assembly(ProductDto dto) {
-		return assembly(null, dto);
-	}
-
-	@Override
-	public AppEntity assembly(AppEntity origAppEntity, ProductDto dto) {
-		AppEntity entity = origAppEntity != null ? origAppEntity : null;
+		AppEntity entity = null;
 		if (dto != null) {
-			if (entity == null) {
-				entity = new AppEntity();
-			}
+			entity = new AppEntity();
+			entity.setId(dto.getId());
 			entity.setName(dto.getName());
 			entity.setType(dto.getType());
 			List<ContentType> contentTypes = new ArrayList<>();

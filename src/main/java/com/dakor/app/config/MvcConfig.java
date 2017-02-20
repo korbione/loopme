@@ -78,19 +78,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
 		interceptor.setParamName("lang");
 		registry.addInterceptor(interceptor);
 	}
-
-	/*@Bean
-	public ConversionServiceFactoryBean conversionService() {
-		ConversionServiceFactoryBean factory = new ConversionServiceFactoryBean();
-		Set<Converter> converters = new HashSet<>();
-		converters.add(new Converter<String, OwnerModel>() {
-			@Override
-			public OwnerModel convert(String json) {
-				return new OwnerModel(0, json);
-			}
-		});
-		factory.setConverters(converters);
-
-		return factory;
-	}*/
 }

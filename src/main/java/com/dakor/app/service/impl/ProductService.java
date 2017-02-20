@@ -66,15 +66,9 @@ public class ProductService implements IProductService {
 	@Override
 	public ProductDto save(ProductDto product) {
 		if (product != null) {
-			AppEntity origEntity = null;
-			if (product.getId() != null) {
-				// for update the entity
-				origEntity = appDao.getOne(product.getId());
-			}
-
-			AppEntity appEntity = assembler.assembly(origEntity, product);
-			AppEntity savedUserEntity = appDao.saveAndFlush(appEntity);
-			product = assembler.assembly(savedUserEntity);
+			AppEntity appEntity = assembler.assembly(product);
+			appEntity = appDao.saveAndFlush(appEntity);
+			product = assembler.assembly(appEntity);
 		}
 
 		return product;

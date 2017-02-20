@@ -10,6 +10,5 @@ import com.dakor.app.service.dto.UserDto;
  */
 public interface IUserAssembler {
 	UserDto assembly(UserEntity entity);
-	UserEntity assembly(UserEntity orig, UserDto dto);
 	UserEntity assembly(UserDto dto);
 }

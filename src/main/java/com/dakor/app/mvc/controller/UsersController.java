@@ -3,13 +3,21 @@ package com.dakor.app.mvc.controller;
 import com.dakor.app.data.entity.UserRole;
 import com.dakor.app.mvc.model.UserModel;
 import com.dakor.app.service.IUserService;
+import com.dakor.app.service.Messages;
 import com.dakor.app.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.validation.Valid;
 import java.util.Collections;
@@ -27,10 +35,16 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 public class UsersController extends AbstractController {
 	private IUserService userService;
+	private Messages msg;
 
 	@Autowired
 	public void setUserService(IUserService userService) {
 		this.userService = userService;
+	}
+
+	@Autowired
+	public void setMsg(Messages msg) {
+		this.msg = msg;
 	}
 
 	@GetMapping
@@ -61,6 +75,15 @@ public class UsersController extends AbstractController {
 	public String saveUser(@Valid @ModelAttribute("user") UserModel userModel, BindingResult bindingResult, Model model) {
 		if (bindingResult.hasErrors()) {
 			return "fragments/user_dialog :: user-form";
+		} else {
+			// check whether a user with the same name already exists
+			if (userModel.getId() == null) {
+				UserDto userByName = userService.getUserByName(userModel.getName());
+				if (userByName != null) {
+					bindingResult.addError(new FieldError("user", "name", msg.get("app.users.dialog.error.name")));
+					return "fragments/user_dialog :: user-form";
+				}
+			}
 		}
 
 		UserDto dto = new UserDto();

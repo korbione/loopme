@@ -18,6 +18,7 @@ public class LoopMeApplication {
 	@Bean
 	public CommandLineRunner getCommandLineRunner(IUserService userService) {
 		return args -> {
+			// initialize the administrator if needed
 			UserDto admin = userService.getUserByName("sa");
 			if (admin == null) {
 				// create an initial administrator
@@ -26,15 +27,6 @@ public class LoopMeApplication {
 				admin.setPassword("sa");
 				admin.setRole(UserRole.ADMIN);
 				userService.save(admin);
-			}
-			UserDto user = userService.getUserByName("u");
-			if (user == null) {
-				user = new UserDto();
-				user.setUserName("u");
-				user.setPassword("u");
-				user.setEmail("user email");
-				user.setRole(UserRole.PUBLISHER);
-				userService.save(user);
 			}
 		};
 	}
