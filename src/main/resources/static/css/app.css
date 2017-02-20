@@ -2,6 +2,22 @@
 	float: right;
 }
 
+.modal-dialog {
+	width: 400px !important;
+}
+
+.modal-dialog .input-sm {
+	width: 200px;
+}
+
 .btn-space {
 	margin: 10px 0;
+}
+
+.row {
+	margin: 10px 0 !important;
+}
+
+input[readonly="readonly"] {
+	background-color: lightgrey;
 }

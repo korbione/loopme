@@ -3,13 +3,12 @@ package com.dakor.app.service.impl;
 import com.dakor.app.data.dao.IUserDao;
 import com.dakor.app.data.entity.UserEntity;
 import com.dakor.app.data.entity.UserRole;
+import com.dakor.app.service.AppContext;
 import com.dakor.app.service.IUserService;
-import com.dakor.app.service.UserDetailsService;
 import com.dakor.app.service.dto.UserDto;
 import com.dakor.app.service.impl.assembler.IUserAssembler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +24,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 class UserService implements IUserService {
 	@Autowired
+	private AppContext appContext;
+
+	@Autowired
 	private IUserDao userDao;
 
 	@Autowired
@@ -35,8 +37,7 @@ class UserService implements IUserService {
 	public List<UserDto> getUsers() {
 		List<UserDto> users = new ArrayList<>();
 
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UserRole role = ((UserDetailsService.User) principal).role;
+		UserRole role = appContext.getCurrentUser().getRole();
 		userDao.findUsers(role).forEach(user -> users.add(userAssembler.assembly(user)));
 
 		return users;
@@ -57,9 +58,15 @@ class UserService implements IUserService {
 	@Transactional
 	@Override
 	public UserDto save(UserDto user) {
-		UserEntity userEntity = userAssembler.assembly(user);
-		if (userEntity != null) {
-			UserEntity savedUserEntity = userDao.save(userEntity);
+		if (user != null) {
+			UserEntity origUserEntity = null;
+			if (user.getId() != null) {
+				// for update the entity
+				origUserEntity = userDao.getOne(user.getId());
+			}
+
+			UserEntity userEntity = userAssembler.assembly(origUserEntity, user);
+			UserEntity savedUserEntity = userDao.saveAndFlush(userEntity);
 			user = userAssembler.assembly(savedUserEntity);
 		}
 

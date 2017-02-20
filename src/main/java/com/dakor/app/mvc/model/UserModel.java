@@ -1,8 +1,6 @@
 package com.dakor.app.mvc.model;
 
 import com.dakor.app.data.entity.UserRole;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,9 +10,7 @@ import javax.validation.constraints.Size;
  *
  * @author dkor
  */
-public class UserModel {
-	private Integer id;
-
+public class UserModel extends AbstractModel {
 	@NotNull
 	@Size(min = 1, max = 255)
 	private String name;
@@ -28,14 +24,6 @@ public class UserModel {
 
 	@NotNull
 	private UserRole role;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -67,14 +55,5 @@ public class UserModel {
 
 	public void setRole(UserRole role) {
 		this.role = role;
-	}
-
-	@SuppressWarnings("unused")
-	public String toJson() {
-		try {
-			return new ObjectMapper().writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			return "{}";
-		}
 	}
 }

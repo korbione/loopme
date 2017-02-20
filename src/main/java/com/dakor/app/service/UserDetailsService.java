@@ -34,7 +34,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 		if (StringUtils.isNotBlank(name)) {
 			UserEntity user = userDao.findByName(name);
 			if (user != null) {
-				details = new User(user.getName(), user.getPassword(), user.getRole());
+				details = new User(user.getId(), user.getName(), user.getPassword(), user.getRole());
 			}
 		}
 
@@ -54,11 +54,21 @@ public class UserDetailsService implements org.springframework.security.core.use
 	 * @author dkor
 	 */
 	public static class User extends org.springframework.security.core.userdetails.User {
-		public UserRole role;
+		private final Integer id;
+		private final UserRole role;
 
-		public User(String username, String password, UserRole role) {
+		public User(Integer id, String username, String password, UserRole role) {
 			super(username, password, Collections.singleton(new SimpleGrantedAuthority(Validate.notNull(role).name())));
+			this.id = id;
 			this.role = role;
+		}
+
+		public Integer getId() {
+			return id;
+		}
+
+		public UserRole getRole() {
+			return role;
 		}
 
 		@Override

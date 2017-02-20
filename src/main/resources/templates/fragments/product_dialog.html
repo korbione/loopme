@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:with="lang='en'">
+<head>
+	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+
+<body>
+<!-- fragment of the product dialog -->
+<form th:fragment="product-form" id="productDialogForm" th:classappend="${#fields.hasErrors()} ? 'has-error'"
+	  th:object="${product}" th:action="@{/app/products/save}" method="post">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="dialogTitle"
+			th:text="*{id} ? #{app.products.dialog.title.edit} : #{app.products.dialog.title.add}">Modal title</h4>
+	</div>
+	<div class="modal-body panel-body">
+		<input type="hidden" th:field="*{id}"/>
+		<div class="row">
+			<label for="dialogProductName" th:text="#{app.products.dialog.name}"></label>
+			<input id="dialogProductName" class="input-sm pull-right" type="text" th:field="*{name}"/>
+			<div class="alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+		</div>
+		<div class="row">
+			<label for="dialogProductType" th:text="#{app.products.dialog.type}"></label>
+			<select id="dialogProductType" class="input-sm pull-right" th:field="*{type}">
+				<option th:each="var : ${allTypes}" th:value="${var}" th:text="${var}">Type</option>
+			</select>
+			<div class="alert-warning" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+		</div>
+		<div class="row">
+			<label for="dialogContentType" th:text="#{app.products.dialog.content_type}"></label>
+			<select id="dialogContentType" class="input-sm pull-right" multiple="multiple"
+					th:field="*{contentTypes}">
+				<option th:each="var : ${allContentTypes}" th:value="${var}" th:text="${var}">Content type</option>
+			</select>
+			<div class="alert-warning" th:if="${#fields.hasErrors('contentTypes')}" th:errors="*{contentTypes}"></div>
+		</div>
+		<div class="row" th:classappend="${#strings.contains(#authentication.principal.authorities,'PUBLISHER')} ? 'hidden'">
+			<label for="dialogPublisher" th:text="#{app.products.dialog.publisher}"></label>
+			<select id="dialogPublisher" class="input-sm pull-right" th:field="*{owner}">
+				<option th:each="var : ${allOwners}" th:value="${var.toJson()}" th:text="${var.name}">publisher</option>
+			</select>
+			<div class="alert-warning" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}"></div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<input type="button" class="btn btn-default" data-dismiss="modal"
+			   th:value="#{app.dialog.close}"/>
+		<input type="submit" class="btn btn-primary" th:value="#{app.dialog.save}"/>
+	</div>
+</form>
+</body>
+</html>

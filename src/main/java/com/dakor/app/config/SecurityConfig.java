@@ -8,15 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.repository.query.spi.EvaluationContextExtension;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
-import org.springframework.data.repository.query.spi.Function;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Map;
 
 /**
  * .
@@ -41,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// @formatter:off
 		http.authorizeRequests()
-				.mvcMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
-				.mvcMatchers("/adops/**").hasAnyRole(UserRole.ADOPS.name(), UserRole.ADMIN.name())
+				.mvcMatchers("/app/users/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.ADOPS.name())
+				.mvcMatchers("/app/products/**").hasAnyRole(UserRole.PUBLISHER.name(), UserRole.ADOPS.name())
 				.anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").defaultSuccessUrl("/app", true).permitAll()
 				.and().logout().logoutSuccessUrl("/login?logout").permitAll();
@@ -63,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public SecurityExpressionRoot getRootObject() {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			return new SecurityExpressionRoot(authentication) {};
+			return new SecurityExpressionRoot(authentication) {
+			};
 		}
 	}
 }

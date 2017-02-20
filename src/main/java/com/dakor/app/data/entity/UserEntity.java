@@ -1,13 +1,7 @@
 package com.dakor.app.data.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * .
@@ -35,6 +29,9 @@ public class UserEntity {
 	@Enumerated(EnumType.ORDINAL)
 	private UserRole role;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<AppEntity> products;
+
 	@PrePersist
 	public void prePersist() {
 		if (role == null) {
@@ -44,6 +41,10 @@ public class UserEntity {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -76,5 +77,13 @@ public class UserEntity {
 
 	public void setRole(UserRole role) {
 		this.role = role;
+	}
+
+	public List<AppEntity> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<AppEntity> products) {
+		this.products = products;
 	}
 }

@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:with="lang='en'">
 <head>
-    <link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
 
 <body>
 <!-- fragment of the user dialog -->
-<div th:fragment="dialog" id="userDialog" class="modal fade" tabindex="-1" role="dialog"
-     aria-labelledby="dialogTitle">
-    <div class="modal-dialog" role="form">
-        <div class="modal-content" style="width: 400px">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="dialogTitle">Modal title</h4>
-            </div>
-            <div class="modal-body panel-body">
-                <input type="hidden" name="id"/>
-                <div class="row" style="margin: 0">
-                    <label for="dialogUserName" th:text="#{app.users.dialog.username}"></label>
-                    <input id="dialogUserName" class="pull-right" type="text" name="name"/>
-                </div>
-                <div class="row" style="margin: 0">
-                    <label for="dialogUserPassword" th:text="#{app.users.dialog.password}"></label>
-                    <input id="dialogUserPassword" class="pull-right" type="text" name="password"/>
-                </div>
-                <div class="row" style="margin: 0">
-                    <label for="dialogUserEmail" th:text="#{app.users.dialog.email}"></label>
-                    <input id="dialogUserEmail" class="pull-right" type="text" name="email"/>
-                </div>
-                <!--/*@thymesVar id="roles" type=""*/-->
-                <!--/*@thymesVar id="role" type=""*/-->
-                <div class="row" th:classappend="${(#lists.size(roles) < 2) ? 'hidden' : ''}"  style="margin: 0">
-                    <label for="userRole" th:text="#{app.users.dialog.role}"></label>
-                    <div class="pull-right">
-                        <div th:if="${#lists.size(roles) > 1}" id="userRoleDropdown" class="dropdown">
-                            <a id="dropdownMenu" class="btn dropdown-toggle"
-                               data-toggle="dropdown"><span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li th:each="role : ${roles}">
-                                    <a onclick="$('#userRole').val($(this).text())" th:text="${role}">Role</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <input id="userRole" type="text" name="role" class="form-control" readonly="readonly"
-                               th:value="${(#lists.size(roles) > 1) ? roles.get(0) : ''}"/>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <input type="button" class="btn btn-default" data-dismiss="modal"
-                       th:value="#{app.users.dialog.close}"/>
-                <input id="dialogSaveButton" type="button" class="btn btn-primary" th:value="#{app.users.dialog.save}"/>
-            </div>
-        </div>
-    </div>
-</div>
+<form th:fragment="user-form" id="userDialogForm" th:classappend="${#fields.hasErrors()} ? 'has-error'"
+	  th:object="${user}" th:action="@{/app/users/save}" method="post">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="dialogTitle"
+			th:text="*{id} ? #{app.users.dialog.title.edit} : #{app.users.dialog.title.add}">Modal title</h4>
+	</div>
+	<div class="modal-body panel-body">
+		<input type="hidden" th:field="*{id}"/>
+		<div class="row">
+			<label for="dialogUserName" th:text="#{app.users.dialog.username}"></label>
+			<input id="dialogUserName" class="input-sm pull-right" type="text" th:field="*{name}"/>
+			<div class="alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+		</div>
+		<div class="row">
+			<label for="dialogUserPassword" th:text="#{app.users.dialog.password}"></label>
+			<input id="dialogUserPassword" class="input-sm pull-right" type="text" th:field="*{password}"/>
+			<div class="alert-warning" th:if="${#fields.hasErrors('password')}"
+				 th:errors="*{password}"></div>
+		</div>
+		<div class="row">
+			<label for="dialogUserEmail" th:text="#{app.users.dialog.email}"></label>
+			<input id="dialogUserEmail" class="input-sm pull-right" type="text" th:field="*{email}"/>
+			<div class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+		</div>
+		<div class="row" th:classappend="${#lists.size(roles) &lt; 2} ? 'hidden'">
+			<label for="userRole" th:text="#{app.users.dialog.role}"></label>
+			<div class="pull-right" style="display: inline-flex">
+				<div th:if="${#lists.size(roles) > 1}" id="userRoleDropdown" class="dropdown">
+					<a id="dropdownMenu" class="btn dropdown-toggle"
+					   data-toggle="dropdown"><span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li th:each="role : ${roles}">
+							<a onclick="$('#userRole').val($(this).text())" th:text="${role}">Role</a>
+						</li>
+					</ul>
+				</div>
+				<input id="userRole" type="text" readonly="readonly" class="input-sm" th:field="*{role}"/>
+				<div class="alert-warning" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<input type="button" class="btn btn-default" data-dismiss="modal"
+			   th:value="#{app.dialog.close}"/>
+		<input type="submit" class="btn btn-primary" th:value="#{app.dialog.save}"/>
+	</div>
+</form>
 </body>
 </html>

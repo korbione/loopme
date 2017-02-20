@@ -28,10 +28,27 @@ public class UserAssembler implements IUserAssembler {
 	}
 
 	@Override
+	public UserEntity assembly(UserEntity orig, UserDto dto) {
+		UserEntity entity = orig != null ? orig : null;
+		if (dto != null) {
+			if (entity == null) {
+				entity = new UserEntity();
+			}
+			entity.setName(dto.getUserName());
+			entity.setPassword(dto.getPassword());
+			entity.setEmail(dto.getEmail());
+			entity.setRole(dto.getRole());
+		}
+
+		return entity;
+	}
+
+	@Override
 	public UserEntity assembly(UserDto dto) {
 		UserEntity entity = null;
 		if (dto != null) {
 			entity = new UserEntity();
+			entity.setId(dto.getId());
 			entity.setName(dto.getUserName());
 			entity.setPassword(dto.getPassword());
 			entity.setEmail(dto.getEmail());

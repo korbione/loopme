@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:data="...">
+<head>
+	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+</head>
+
+<body>
+<table>
+	<!-- fragment of the products table row -->
+	<tr th:fragment="row" class="row" data:product="${product.toJson()}" th:each="product, iterStat : ${products}">
+		<td id="index" th:text="${iterStat.count}">0</td>
+		<td th:text="${product.name}">unknown name</td>
+		<td th:text="${product.type}"></td>
+		<td th:text="${#strings.listJoin(product.contentTypes, ', ')}"></td>
+		<td sec:authorize="hasAnyAuthority('ADOPS')" th:text="*{product.owner}?*{product.owner.name}"></td>
+		<td>
+			<button id="editProduct" type="button" class="btn btn-xs btn-success" onclick="editProduct($(this))"
+					data-toggle="modal" data-target="#productDialog">
+				<span class="glyphicon glyphicon-pencil"></span>
+			</button>
+
+			<button id="removeProduct" type="button" class="btn btn-xs btn-danger" onclick="removeProduct($(this))">
+				<span class="glyphicon glyphicon-remove"></span>
+			</button>
+		</td>
+	</tr>
+</table>
+
+<!-- fragment of the products table -->
+<div th:fragment="products-table" th:remove="tag">
+	<a id="addProduct" class="btn btn-lg btn-success btn-space" data-toggle="modal" data-target="#productDialog"
+	   th:text="#{app.tab.products.add}">Add new product</a>
+
+	<table id="productsTable" class="table">
+		<thead>
+		<tr class="row">
+			<th>#</th>
+			<th th:text="#{app.tab.products.column.name}">Name</th>
+			<th th:text="#{app.tab.products.column.type}">Type</th>
+			<th th:text="#{app.tab.products.column.content_type}">Content type</th>
+			<th sec:authorize="hasAnyAuthority('ADOPS')" th:text="#{app.tab.products.column.owner}">Publisher</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr th:replace="fragments/products :: row"></tr>
+		</tbody>
+	</table>
+
+	<!-- product dialog -->
+	<div id="productDialog" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="form">
+			<div class="modal-content panel-body">
+				<div id="productDialogForm"></div>
+			</div>
+		</div>
+	</div>
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		function pullDialogForm($row) {
+			var product = $row ? $row.data('product') : null;
+			$.ajax({
+				url: 'app/products/form',
+				type: "post",
+				data: JSON.stringify(product),
+				dataType: "html",
+				contentType: "application/json",
+				success: function (response) {
+					console.log(response);
+					$('#productDialogForm').replaceWith(response);
+
+					var $dialog = $('#productDialog');
+					var $table = $('#productsTable');
+					bindFormSubmit($dialog, $table, $row);
+				}
+			});
+		}
+
+		function editProduct(source) {
+			var $row = source.parents('tr');
+			pullDialogForm($row);
+		}
+
+		function removeProduct(source) {
+			var $row = source.parents('tr');
+			var id = $row.data('product').id;
+			$.ajax({
+				url: "app/products/" + id,
+				type: "delete"
+			}).success(function () {
+				$row.remove();
+				calcTableIdx($('#productsTable'));
+			});
+		}
+
+		$(document).ready(function () {
+			$('#addProduct').click(function () {
+				pullDialogForm();
+			});
+
+			$('#productDialog').on('hidden.bs.modal', function () {
+				// remove the dialog content to prevent blinking while next show
+				$(this).find('#productDialogForm').replaceWith('<div id="productDialogForm"></div>');
+			});
+		});
+		/*]]>*/
+	</script>
+</div>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

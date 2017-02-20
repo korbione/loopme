@@ -6,6 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title th:text="#{app.page.title}"></title>
 
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 	<link type="text/css" rel="stylesheet" th:href="@{/css/app.css}" href="../static/css/app.css"/>
 	<link rel="stylesheet" media="screen" href="webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
 </head>
@@ -16,8 +19,9 @@
 		<li sec:authorize="hasAnyAuthority('ADOPS', 'ADMIN')">
 			<a href="#users" data-toggle="tab" onclick="fetchUsers()" th:text="#{app.tab.users.title}">Users</a>
 		</li>
-		<li>
-			<a href="#products" data-toggle="tab" th:text="#{app.tab.products.title}">Products</a>
+		<li sec:authorize="hasAnyAuthority('ADOPS', 'PUBLISHER')">
+			<a href="#products" data-toggle="tab" onclick="fetchProducts()"
+			   th:text="#{app.tab.products.title}">Products</a>
 		</li>
 		<li class="pull-right">
 			<form id="logoutForm" th:action="@{/logout}" action="/logout" method="post">
@@ -30,10 +34,10 @@
 	</ul>
 	<div id="actionTabsContent" class="tab-content">
 		<div id="users" class="tab-pane fade form-group">
-			<div id="resultUsers"></div>
+			<div id="usersBlock"></div>
 		</div>
 		<div id="products" class="tab-pane fade form-group">
-			<label>hello, product</label>
+			<div id="productsBlock"></div>
 		</div>
 	</div>
 </div>
@@ -43,13 +47,24 @@
 <script th:src="@{/js/common.js}" src="../static/js/common.js"></script>
 <script>
 	$(function () {
-		$('#actionTabs').find('a:first').tab('show');
-        fetchUsers();
+		var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+		var csrf = $('meta[name="_csrf"]').attr('content');
+		var headers = {};
+		headers[csrfHeader] = csrf;
+		$.ajaxSetup({
+			headers: headers
+		});
+
+		$('#actionTabs').find('a:first').click();
 	});
 
-    function fetchUsers() {
-        $('#resultUsers').load('/app/users');
-    }
+	function fetchUsers() {
+		$('#usersBlock').load('/app/users');
+	}
+
+	function fetchProducts() {
+		$('#productsBlock').load('/app/products');
+	}
 </script>
 </body>
 </html>
