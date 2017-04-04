@@ -25,7 +25,6 @@ public class LoopMeApplication {
 				admin = new UserDto();
 				admin.setUserName("sa");
 				admin.setPassword("sa");
-
 				admin.setRole(UserRole.ADMIN);
 				userService.save(admin);
 			}
