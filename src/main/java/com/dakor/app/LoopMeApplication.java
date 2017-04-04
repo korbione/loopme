@@ -28,6 +28,7 @@ public class LoopMeApplication {
 				admin.setRole(UserRole.ADMIN);
 				userService.save(admin);
 			}
+
 		};
 	}
 }
